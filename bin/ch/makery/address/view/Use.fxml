@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="600.0" prefWidth="1000.0">
+         <children>
+            <Pane prefHeight="800.0" prefWidth="300.0" style="-fx-background-color: #00bcd4;">
+               <children>
+                  <VBox layoutX="49.0" layoutY="50.0" prefHeight="300.0" prefWidth="200.0" style="-fx-alignment: Center; -fx-border-radius: 20px;">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../resources/avatar.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Ferdy Dinnis" textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="11.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ImageView fitHeight="39.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../resources/five-stars.png" />
+                           </image>
+                        </ImageView>
+                        <JFXButton buttonType="RAISED" prefWidth="100.0" style="-fx-background-color: #ff3d00;" text="Logout" textFill="WHITE">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+               </padding>
+            </Pane>
+            <JFXTabPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" side="BOTTOM">
+               <tabs>
+                  <Tab text="New reservation">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <effect>
+                              <MotionBlur />
+                           </effect></AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="Return car">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-alignment: center;">
+                           <children>
+                              <VBox alignment="CENTER" layoutX="174.0" layoutY="119.0" prefHeight="330.0" prefWidth="352.0">
+                                 <children>
+                                    <Label text="Return Car">
+                                       <font>
+                                          <Font name="System Bold" size="29.0" />
+                                       </font>
+                                    </Label>
+                                    <JFXTextField focusColor="#00bcd4" labelFloat="true" promptText="Car keycode" unFocusColor="#a8a8a8">
+                                       <VBox.margin>
+                                          <Insets top="20.0" />
+                                       </VBox.margin>
+                                    </JFXTextField>
+                                    <Label prefWidth="334.0" text="Rating">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <JFXSlider blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="0" showTickLabels="true" snapToTicks="true" value="1.0">
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </JFXSlider>
+                                    <JFXButton prefWidth="200.0" style="-fx-background-color: #ff3d00;" text="Submit" textAlignment="CENTER" textFill="WHITE">
+                                       <VBox.margin>
+                                          <Insets top="14.0" />
+                                       </VBox.margin>
+                                    </JFXButton>
+                                    <Label fx:id="carReturn_displayMsg">
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin></Label>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="Cancel reservation">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab text="Reservation History">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab text="Register car">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+               </tabs>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXTabPane>
+         </children>
+      </HBox>
+   </children>
+</Pane>

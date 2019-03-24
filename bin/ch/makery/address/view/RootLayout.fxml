@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.makery.address.view.Controller">
+   <left>
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #00bcd4;" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" layoutX="27.0" layoutY="32.0" prefHeight="200.0" prefWidth="146.0">
+               <children>
+                  <ImageView fitHeight="100.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../../resources/avatar.png" />
+                     </image>
+                  </ImageView>
+                  <Label text="Ferdy Dinnis" textFill="WHITE">
+                     <VBox.margin>
+                        <Insets top="7.0" />
+                     </VBox.margin>
+                  </Label>
+                  <ImageView fitHeight="27.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../../resources/five-stars.png" />
+                     </image>
+                  </ImageView>
+                  <JFXButton buttonType="RAISED" onMouseClicked="#logout" prefWidth="100.0" style="-fx-background-color: #ff3d00;" text="Logout" textFill="WHITE" />
+               </children>
+            </VBox>
+         </children>
+      </Pane>
+   </left>
+   <center>
+      <JFXTabPane BorderPane.alignment="CENTER">
+         <tabs>
+            <Tab text="New Reservation">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <HBox spacing="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                           <children>
+                              <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <DatePicker fx:id="new_startTime" promptText="Start date" />
+                                    <DatePicker fx:id="new_endTime" promptText="End date" />
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#findAvailableCars" style="-fx-background-color: #ff3d00;" text="Find cars" textFill="WHITE" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER" minWidth="300.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Available Cars" textAlignment="CENTER">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </Label>
+                                    <JFXListView fx:id="new_availableList" minHeight="200.0" />
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#reserve" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #ff3d00;" text="Reserve!" textFill="WHITE" />
+                                    <Label fx:id="new_reservedMsg" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Return Car">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="325.0" prefWidth="218.0" spacing="10.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="120.0">
+                           <children>
+                              <JFXTextField fx:id="carReturn_code" focusColor="#00bcd4" promptText="Car keycode" unFocusColor="#5e5e5e" />
+                              <Label alignment="TOP_LEFT" prefHeight="17.0" prefWidth="553.0" text="Rating" underline="true" VBox.vgrow="ALWAYS">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <VBox.margin>
+                                    <Insets top="4.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <JFXSlider fx:id="carReturn_rating" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="0" snapToTicks="true" value="1.0" />
+                              <JFXTextArea fx:id="carReturn_comment" focusColor="#00bcd4" prefColumnCount="0" prefHeight="85.0" prefWidth="360.0" promptText="Tell us what you think of the vehicle." unFocusColor="#c6c6c6" wrapText="true">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </JFXTextArea>
+                              <JFXButton buttonType="RAISED" onMouseClicked="#returnCar" prefWidth="108.0" style="-fx-background-color: #ff3d00;" text="Return car" textFill="WHITE">
+                                 <VBox.margin>
+                                    <Insets top="9.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <Label fx:id="carReturn_displayMsg" prefHeight="85.0" prefWidth="218.0" textOverrun="CLIP" wrapText="true">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children></VBox>
+                     </children>
+                     <opaqueInsets>
+                        <Insets top="10.0" />
+                     </opaqueInsets></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Cancel Reservation">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <JFXTextField fx:id="cancel_code" focusColor="#00bcd4" promptText="Car keycode" unFocusColor="#686767" />
+                              <JFXButton buttonType="RAISED" onMouseClicked="#cancelReservation" prefWidth="190.0" style="-fx-background-color: #ff3d00;" text="Cancel Reservation" textFill="WHITE">
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <Label fx:id="cancel_msg" textOverrun="CLIP" wrapText="true">
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Log">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="40.0">
+                           <children>
+                              <Label text="Reservations">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                              <JFXListView fx:id="log_reservations" />
+                              <VBox alignment="TOP_CENTER" spacing="10.0" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="5.0" right="5.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Manage Cars">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <HBox spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                           <children>
+                              <VBox alignment="TOP_CENTER" spacing="13.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="20.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Your Cars">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </Label>
+                                    <JFXListView fx:id="mngCars_carsList" onMouseClicked="#showSelectedCar" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="TOP_CENTER" minWidth="300.0" spacing="18.0" style="-fx-background-color: #CCCCCC;">
+                                 <children>
+                                    <VBox fx:id="mngCars_selectedCar" alignment="TOP_CENTER" spacing="10.0">
+                                       <children>
+                                          <Label text="Selected car" />
+                                          <Label fx:id="mngCars_selectedCarDetails" text="Car model:" wrapText="true" />
+                                          <HBox spacing="12.0">
+                                             <children>
+                                                <Label text="Price/hr:" />
+                                                <JFXTextField fx:id="mngCars_selectedCarPrice" focusColor="#00bcd4" promptText="Numbers only pls" />
+                                             </children>
+                                          </HBox>
+                                          <JFXButton buttonType="RAISED" onMouseClicked="#editCar" style="-fx-background-color: #ff3d00;" text="Edit car" textFill="#fcfcfc" />
+                                          <Label fx:id="mngCars_updateCarMsg" textFill="#ff3d00" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="12.0">
+                                       <children>
+                                          <Label text="Add new car" />
+                                          <HBox>
+                                             <children>
+                                                <Label text="License_plate: " />
+                                                <JFXTextField fx:id="newCar_lience" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Price/hr: " />
+                                                <JFXTextField fx:id="newCar_price" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Available from:" />
+                                                <DatePicker fx:id="newCar_availStart" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Available to:" />
+                                                <DatePicker fx:id="newCar_availEnd" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Brand" />
+                                                <JFXTextField fx:id="newCar_brand" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Model" />
+                                                <JFXTextField fx:id="newCar_model" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Year" />
+                                                <JFXTextField fx:id="newCar_year" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Insurance claim:" />
+                                                <JFXTextField fx:id="newCar_insuranceClaim" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Insurance expiration: " />
+                                                <DatePicker fx:id="newCar_insuranceExp" />
+                                             </children>
+                                          </HBox>
+                                          <JFXButton buttonType="RAISED" onMouseClicked="#addNewCar" style="-fx-background-color: #ff3d00;" text="Add car" textFill="#fcfcfc" />
+                                          <Label fx:id="newCar_msg" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Data Visuals">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <JFXTabPane rotateGraphic="true" style="-fx-background-color: #202020;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <tabs>
+                              <Tab style="-fx-background-color: #ff3d00;" text="Bar Chart">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <padding>
+                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                       </padding>
+                                       <children>
+                                          <VBox fx:id="linechartPane" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab style="-fx-background-color: #ff3d00;" text="Pie Chart">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <PieChart fx:id="piechart" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                           </tabs>
+                        </JFXTabPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+   </center>
+</BorderPane>

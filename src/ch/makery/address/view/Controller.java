@@ -187,7 +187,7 @@ public class Controller extends FXMLLoader {
 	}
 
 	@FXML
-	public void reserve() {
+	public void reserve() throws Exception {
 		Timestamp startTime = Timestamp.valueOf(new_startTime.getValue().atStartOfDay());
 		Timestamp endTime = Timestamp.valueOf(new_endTime.getValue().atStartOfDay());
 		String selectedCar = new_availableList.getSelectionModel().getSelectedItem();
@@ -197,6 +197,8 @@ public class Controller extends FXMLLoader {
 
 		String s = DB.makeRes(connection, license, 4, startTime, endTime);
 		new_reservedMsg.setText(s);
+
+		populateLog();
 	}
 
 	@FXML
@@ -209,7 +211,7 @@ public class Controller extends FXMLLoader {
 
 		s = DB.returnVehicle(connection, Integer.parseInt(code), (int) rating, comment);
 		carReturn_displayMsg.setText(s);
-		
+		populateLog();
 	}
 
 	@FXML
@@ -219,11 +221,11 @@ public class Controller extends FXMLLoader {
 		int code = Integer.parseInt(cancel_code.getText());
 		s = DB.cancelRes(connection, 4, code);
 		cancel_msg.setText(s);
-
+		populateLog();
 	}
 
 	@FXML
-	void displayMyCars() throws Exception {
+	public void displayMyCars() throws Exception {
 		JFXListView<String> list = mngCars_carsList;
 
 		ArrayList<String> cars = DB.viewVehicle(connection, 4);
@@ -239,7 +241,7 @@ public class Controller extends FXMLLoader {
 	}
 
 	@FXML
-	private void showSelectedCar() throws Exception {
+	public void showSelectedCar() throws Exception {
 		String car = mngCars_carsList.getSelectionModel().getSelectedItem();
 
 		String license = car.substring(0, car.indexOf(","));
@@ -292,7 +294,7 @@ public class Controller extends FXMLLoader {
 	}
 
 	@FXML
-	private void logout() {
+	private void logout() throws Exception {
 		Stage stage = mainApp.primaryStage;
 		stage.close();
 	}

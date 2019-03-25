@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.postgresql.util.PSQLException;
 public class DB {
 
 	static String dbConn = "jdbc:postgresql://comp421.cs.mcgill.ca:5432/cs421";
@@ -90,7 +92,7 @@ public class DB {
 	 */
 	
 	public static String makeRes(Connection c, String license_plate, int u_id, Timestamp start_dateentered,
-	Timestamp end_dateentered) {	
+			Timestamp end_dateentered) throws Exception {
 	
 //		Connection c = app.connect();
 		double totalPrice = 0;
@@ -118,7 +120,7 @@ public class DB {
 		    	int numHours = (int) ((end_dateentered.getTime() - start_dateentered.getTime()) / (1000 * 60 * 60));
 		    	totalPrice = numHours * hrPrice;
 				
-			}	
+			}
 			vSet.close();
 			
 			ResultSet codeSet = smt.executeQuery("SELECT MAX(key_code) FROM reservation");
@@ -131,25 +133,20 @@ public class DB {
 			
 			codeSet.close();
 			
-			
-			
 			smt.executeUpdate("INSERT INTO reservation (start_datetime, end_datetime, license_plate, u_id, total_price, key_code, card_num) values ('"		
 					+ start_dateentered + "', '" +end_dateentered + "', " + license_plate
 					+ ", " + u_id + ", " + totalPrice + ", " + newCode + ", " + cardNum 
 					+ ");");
 			
 			returnString = "Total price: " + totalPrice + "\nYour unique keycode: " + newCode;
-			
-			
-//			c.close();
+			return returnString;
 			
 		}
 				
 		catch (Exception e) {
-	    	returnString = "Your reservation was not made successfully";
+			returnString = "Your reservation was not made successfully";
+			throw new Exception();
 		}
-	  
-		return returnString;
 		
 		
 	}
@@ -160,23 +157,25 @@ public class DB {
 		
 		String returnString = "";
 //		Connection c = app.connect();
-		
+		Statement smt = null;
 		try { 
 			
-			Statement smt = c.createStatement();
+			smt = c.createStatement();
 			
-			smt.executeUpdate("Delete from reservation where u_id = " + u_id + 
+			int s = smt.executeUpdate("Delete from reservation where u_id = " + u_id +
 				" and key_code = " + code + ";");
+			if (s == 0)
+				return "There's no reservation with that keycode.";
+			else
+				return "Your reservation was successfully canceled.";
 			
-			
-			smt.close();
-//			c.close();
-			returnString = "Your reservation was successfully canceled";
-			return returnString;
 		}
 				
 		catch (Exception e) {
 			throw new Exception("Sorry, Your reservation was not successfully canceled!");
+		}
+		finally {
+			smt.close();
 		}
 		
 		
@@ -235,11 +234,7 @@ public class DB {
 		
 	}
 
-	
 	public static String returnVehicle(Connection c, int code, int rating, String comment) throws Exception {
-		
-		//The same connection will be used through the method call
-//		Connection c = app.connect();
 		
 		boolean isSurge = false;
 		String licensePlate = "";
@@ -251,7 +246,8 @@ public class DB {
 		
 		Date date = new Date();
 		Timestamp realReturn = new Timestamp(date.getTime());
-		double tripPrice = 0;
+		double baseTripPrice = 0;
+		double lateTripPrice = 0;
 		double hrPrice = 0;
 		int numLateHours = 0;
 		boolean isLate = false;
@@ -264,46 +260,45 @@ public class DB {
 			
 			smt = c.createStatement();
 			
-			//Run a query on that statement -- to my knowledge there is one query per statement
 			checkRs = smt.executeQuery("SELECT * FROM reservation WHERE key_code = " +
 			code);
 			
-			
-			//Loop to go through the results of the query 
+			if (!checkRs.isBeforeFirst()) {
+				return "there is no car with that keycode!";
+			}
+
 			while (checkRs.next()) {
 				
-				String returnDate = "";
+				String returnDate = checkRs.getString("real_return_datetime");
+
+				if (returnDate != null) {
+					return "this car has already been returned!";
+				}
+
+				starttime = checkRs.getTimestamp("start_datetime");
+				endtime = checkRs.getTimestamp("end_datetime");
 				
-				//Get the return date
-				returnDate  = checkRs.getString("real_return_datetime");
+				if (realReturn.before(starttime)) {
+					return "Cannot return the vehicle before you start the reservation. \nGo to cancel reservation instead.";
+				}
 				
-				//Get the license plate number 
+				baseTripPrice = checkRs.getDouble("total_price");
 				licensePlate = checkRs.getString("license_plate");
 				renterId = checkRs.getInt("u_id");
 				
-				//check if Surge pricing is on
 				int surgeCheck = checkRs.getInt("surged");
 				if (surgeCheck == 1) {
 					isSurge = true;
 				}
 				
-				starttime = checkRs.getTimestamp("start_datetime");
-				endtime = checkRs.getTimestamp("end_datetime");
-				tripPrice = checkRs.getDouble("total_price");
-				
-				if (realReturn.before(starttime)) {
-					return "Cannot return the vehicle before you start the reservation. \nGo to cancel reservation instead.";
-				}
 
 				if (endtime.before((Timestamp) realReturn)) {
 			    	isLate = true;
 			    	numLateHours = (int) ((((Timestamp) realReturn).getTime() - endtime.getTime()) / (1000 * 60 * 60));
 		        }
+
+				System.out.println(licensePlate + "is late by " + numLateHours);
 								
-				if (returnDate != null) {
-					return "this car has already been returned!";
-				}
-				
 			}
 
 			checkRs.close();
@@ -323,33 +318,42 @@ public class DB {
 
 		    if (isLate) {
 		    	double lateHrlyPrice = hrPrice * 1.2;
-		    	tripPrice += numLateHours * lateHrlyPrice;
-
+				lateTripPrice = (numLateHours * lateHrlyPrice);
 		    } 
 		    
+			double totalPrice = lateTripPrice + baseTripPrice;
+
 		    if (isSurge) {
-		    	tripPrice = tripPrice * 1.2;
+				totalPrice = totalPrice * 1.2;
 		    }
 
-			smt.executeUpdate("Update reservation set total_price = " + tripPrice + ";");
+			smt.executeUpdate("Update reservation set total_price = " + totalPrice + " where key_code = " + code + ";");
 
+			ResultSet rs = smt.executeQuery(
+					"select * from rates where renter_id = " + renterId + " and owner_id = " + ownerId + ";");
 
-		    smt.executeUpdate("insert into rates values (" + renterId + ", "+ ownerId + ", '" + realReturn 
-		    		+ "', " + rating + ", '" + comment + "');");
+			if (!rs.isBeforeFirst()) {
 
-			System.out.println("Operation done successfully");
+				rs.close();
+
+				smt.executeUpdate("insert into rates values (" + renterId + ", " + ownerId + ", '" + realReturn + "', "
+						+ rating + ", '" + comment + "');");
+
+			}
+
 			return "Operation done successfully";
+		}
+		catch (PSQLException e) {
+			throw new Exception(e.getMessage());
 		}
 		catch (Exception e) {
 			throw new Exception(e.getClass().getName() + ": " + e.getMessage());
 		} finally {
 			smt.close();
 		}
-	  
-
-		
 		
 	}
+
 	
 	public static String[] getCar(Connection c, String license) throws Exception {
 		Statement smt = null;
@@ -380,10 +384,6 @@ public class DB {
 
 	public static ArrayList<String> viewVehicle(Connection c, int u_id) throws Exception {
 		
-		//display all vehicles
-		
-//		Connection c = app.connect();
-		
 		ArrayList<String> result = new ArrayList<String>();
 		Statement smt = null;
 		ResultSet hist = null;
@@ -405,14 +405,8 @@ public class DB {
 					
 					String total = license + ", " + price + ", " +  brand + ", " + model + ", " + code;
 
-
 					result.add(total);
-					
-					
 			}
-				
-			
-			
 
 			for (int i=0; i<result.size(); i++) {
 				System.out.println(result.get(i));
